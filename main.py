@@ -7,7 +7,9 @@ working_hours = pd.read_csv(
     DATASETS_DIR + "/Horas de Trabalho (Our World in Data)/annual-working-hours-per-worker.csv"
 )
 happiness = pd.read_csv(
-    DATASETS_DIR + "/World Happiness Report (Kaggle)/happy.csv"
+    DATASETS_DIR + "/World Happiness Report (Kaggle)/happy.csv",
+    sep=";", # precisamos disto para indicar que as colunas estão separadas por ponto e vírgula senão o pandas interpretava cada linha como uma coluna
+    decimal="," # e usamos isto para dizer que os números decimais usam vírgula e assim o pandas converte corretamente para float
 )
 gdp_per_capita = pd.read_csv(
     DATASETS_DIR + "/PIB per Capita (World Bank Open Data)/API_NY.GDP.PCAP.CD_DS2_en_csv_v2_468810.csv",
@@ -58,3 +60,12 @@ print(working_hours_copy_country)
 
 #print('\nGDP per Capita dataset:')
 #print(gdp_per_capita_copy.head())
+
+print("\nWorld Happiness dataset:")
+print(happiness_copy.head())
+
+print("\nColunas:")
+print(happiness_copy.columns.tolist())
+
+print("\nPaíses:")
+print(happiness_copy["Country name"].head())
