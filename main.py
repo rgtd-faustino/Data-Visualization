@@ -22,13 +22,16 @@ working_hours_copy = working_hours.copy()
 happiness_copy = happiness.copy()
 gdp_per_capita_copy = gdp_per_capita.copy()
 
+print("\n")
+print("======================================= Working Hours dataset =======================================")
+print("\n")
 
-
-working_hours_copy["median"] = np.mean(working_hours_copy["Working hours per worker"])
+print("Median working hours: ", np.median(working_hours_copy["Working hours per worker"]))
+print("Mean working hours: ", np.mean(working_hours_copy["Working hours per worker"]))
 print("Number of countries:", working_hours_copy["Code"].nunique())
 
 print("\n")
-print('Working Hours dataset:')
+print('Working Hours dataset head:')
 print(working_hours_copy.head())
 print("\n")
 
@@ -61,11 +64,70 @@ print(working_hours_copy_country)
 #print('\nGDP per Capita dataset:')
 #print(gdp_per_capita_copy.head())
 
-print("\nWorld Happiness dataset:")
+print("\n")
+print("======================================= World Happiness dataset =======================================")
+print("\n")
+
+
+print("\nWorld Happiness dataset head:")
 print(happiness_copy.head())
 
-print("\nColunas:")
-print(happiness_copy.columns.tolist())
-
-print("\nPaíses:")
+print("\nCountries:")
 print(happiness_copy["Country name"].head())
+
+print("\n")
+print("Median happiness score: ", np.median(happiness_copy["Ladder score"]))
+print("Mean happiness score: ", np.mean(happiness_copy["Ladder score"]))
+
+print("\n")
+print('Happiness dataset head:')
+print(happiness_copy.head())
+print("\n")
+
+happiness_copy_table = (
+# observed=True avoids showing unused categorical combinations.
+    happiness_copy.groupby("Country name", observed=True) 
+    .agg(
+        rank=("Rank", "mean"),
+        life_choices_mean=("Explained by: Freedom to make life choices", "mean"),
+        ladder_score_mean=("Ladder score", "mean"),
+        social_support_mean=("Explained by: Social support", "mean")
+    )
+    #.reset_index() # else "Country name" would be the table's index
+    #.sort_values(by="ladder_score_mean", ascending=False)
+    .sort_values(by="rank", ascending=True)
+)
+
+print(happiness_copy_table)
+
+
+
+
+
+print("\n")
+print("======================================= GDP Per Capita dataset =======================================")
+print("\n")
+
+print("\nGDP Per Capita dataset head:")
+print(gdp_per_capita_copy.head())
+print("\n")
+
+print("\nCountries:")
+print(gdp_per_capita_copy["Country Code"].head())
+print("\n")
+
+gdp_per_capita_copy_table = (
+# observed=True avoids showing unused categorical combinations.
+    gdp_per_capita_copy.groupby("Country Name", observed=True) 
+    .agg(
+        year_2022=("2022", "mean"),
+        year_2023=("2023", "mean"),
+        year_2024=("2024", "mean"),
+        year_2025=("2025", "mean")
+    )
+    #.reset_index() # else "Country Name" would be the table's index
+    .sort_values(by="year_2025", ascending=False, na_position="last")
+)
+
+print(gdp_per_capita_copy_table)
+
