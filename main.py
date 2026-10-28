@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import matplotlib as plt
 
 DATASETS_DIR = "D:/FCUL/Visualização de Dados/tp/Data-Visualization/Datasets"
 
@@ -195,3 +196,7 @@ combined_datasets = pd.merge(
     how="inner"
 )
 print(combined_datasets)
+
+fig, ax = plt.subplots(figsize=(7, 5))
+ax.scatter(combined_datasets["years"], alpha=0.65, color="#4c78a8")
+plt.show()
