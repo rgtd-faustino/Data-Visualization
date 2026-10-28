@@ -29,24 +29,28 @@ happiness_copy["year"] = pd.to_datetime(
     happiness_copy["Data"],
     format="%d/%m/%Y" # the dates are written in this order
 ).dt.year # extract only the year
+
 # this is where we have a problem because there isn't a year column, the dataset has columns for every year
 gdp_per_capita_copy = gdp_per_capita_copy.melt(
-    # so we can associate what we want to the identifying variables, in this case the country code because every country has a different one
-    # it works like a primary key as in SQL
-    # but since we are grouping by country name because the other datasets dont all contain the country code we use that one instead
+    # so we can keep the columns that identify each country and the indicator and associate them with the values we want
+    # the country code is different for every country and works like a primary key as in SQL
+    # we also keep the country name, indicator name and indicator code because we don't want to delete any information yet
     id_vars=[
-        "Country Name"
+        "Country Name",
+        "Country Code",
+        "Indicator Name",
+        "Indicator Code"
     ],
-    # and this indicates which columns have to be converted into lines and for that we can check if the values are only digits
-    # and if they are then it means we found the year columns
+    # and this indicates which columns have to be converted into lines
+    # if the column name contains only digits then it means we found a year column
     value_vars=[
         column for column in gdp_per_capita_copy.columns
         if str(column).isdigit()
     ],
-    # we this we can tell pandas to grab the columns' names which are the dates and transform them into a new column named "year"
+    # with this we tell pandas to grab the columns' names which are the years and transform them into a new column named "year"
     var_name="year",
     # but we can't forget about the values that would be inside those columns, namely the gdp per capita so this grabs those values
-    # and puts them in a new column named chamada gdp_per_capita
+    # and puts them in a new column named gdp_per_capita
     value_name="gdp_per_capita"
 )
 
@@ -155,9 +159,7 @@ print(gdp_per_capita_copy.head())
 print("\n")
 
 print("\nCountries:")
-# we deleted this column so we cant use it anymore, we ahve to use another one like country name
-#print(gdp_per_capita_copy["Country Code"].head())
-print(gdp_per_capita_copy["Country Name"].head())
+print(gdp_per_capita_copy["Country Code"].head())
 print("\n")
 
 gdp_per_capita_copy_table = (
