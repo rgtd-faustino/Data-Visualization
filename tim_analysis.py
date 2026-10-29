@@ -30,27 +30,39 @@ happiness_copy = happiness.copy()
 gdp_per_capita_copy = gdp_per_capita.copy()
 
 
+def clean_gdp(df):
+    """Clean GDP per capita dataset."""
+    #  copy GDP per capite dataset
+    gdp_clean = df.copy()
+
+    # Delete unnecessary columns.
+    gdp_clean = gdp_per_capita_copy.drop(
+    columns=["Indicator Name", "Indicator Code", "Unnamed: 70"], 
+    errors='ignore'
+    )
+
+    # Convert the years from columns to rows.
+    gdp_clean = gdp_clean.melt(
+        id_vars =["Country Name", "Country Code"],
+        var_name = "Year",
+        value_name = "GDP_per_capita"
+    )
+    # convert the year from str to numeric
+    gdp_clean["Year"]= pd.to_numeric(gdp_clean["Year"])
+
+    # select data after 2005
+    gdp_clean = gdp_clean[gdp_clean["Year"] >= 2005]
+
+    return gdp_clean
+    
+
 # clean gdp_per_capita data
 
 gdp_per_capita_copy = gdp_per_capita.copy()
 # display(gdp_per_capita_copy.head())
 
-# Delete unnecessary columns. 
-gdp_clean = gdp_per_capita_copy.drop(
-    columns=["Indicator Name", "Indicator Code", "Unnamed: 70"], 
-    errors='ignore'
-    )
-# Convert the years from columns to rows.
-gdp_clean = gdp_clean.melt(
-    id_vars =["Country Name", "Country Code"],
-    var_name = "Year",
-    value_name = "GDP_per_capita"
-)
-# convert the year from str to num
-gdp_clean["Year"]= pd.to_numeric(gdp_clean["Year"])
 
-# select data after 2005
-gdp_clean = gdp_clean[gdp_clean["Year"] >= 2005]
+gdp_clean = clean_gdp(gdp_per_capita_copy)
 
 display(gdp_clean.head())
 # display(gdp_clean[gdp_clean["Country Code"] == "ABW"].head())
@@ -58,6 +70,4 @@ display(gdp_clean.head())
 print(gdp_clean.isna().sum())
 print(gdp_clean.shape)
 
-missing_gdp = gdp_clean[gdp_clean["GDP_per_capita"].isna()]
 
-display(missing_gdp.head())

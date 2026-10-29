@@ -1,19 +1,29 @@
 import pandas as pd
 import numpy as np
+from pathlib import Path 
 
-DATASETS_DIR = "D:/FCUL/Visualização de Dados/tp/Data-Visualization/Datasets"
+# load data
+try:
+    BASE_DIR = Path(__file__).resolve().parent
+except NameError:
+    # Jupyter Notebook 环境下没有 __file__ 变量
+    BASE_DIR = Path.cwd()
+
+DATASETS_DIR = BASE_DIR / "Datasets"
+
+DATASETS_DIR = BASE_DIR / "Datasets"
 
 working_hours = pd.read_csv(
-    DATASETS_DIR + "/Horas de Trabalho (Our World in Data)/annual-working-hours-per-worker.csv"
+    DATASETS_DIR / "Horas de Trabalho (Our World in Data)/annual-working-hours-per-worker.csv"
 )
 happiness = pd.read_csv(
-    DATASETS_DIR + "/World Happiness Report (Kaggle)/happy.csv",
-    sep=";", # we need this to indicate that the columns are separated by semicolons, otherwise pandas would interpret each line as one column
-    decimal="," # and we use this to indicate that decimal numbers use commas, so pandas converts them correctly to float
+    DATASETS_DIR / "World Happiness Report (Kaggle)/happy.csv",
+    sep=";",
+    decimal=","
 )
 gdp_per_capita = pd.read_csv(
-    DATASETS_DIR + "/PIB per Capita (World Bank Open Data)/API_NY.GDP.PCAP.CD_DS2_en_csv_v2_468810.csv",
-    # we have to skip the first 4 lines because they contain metadata and pandas would try to parse them as data
+    DATASETS_DIR / "PIB per Capita (World Bank Open Data)/API_NY.GDP.PCAP.CD_DS2_en_csv_v2_468810.csv",
+    # we have to skip the first 4 lintes because they're are about metadata because pandas was trying to parse them as data
     skiprows=4
 )
 
@@ -21,6 +31,9 @@ gdp_per_capita = pd.read_csv(
 working_hours_copy = working_hours.copy()
 happiness_copy = happiness.copy()
 gdp_per_capita_copy = gdp_per_capita.copy()
+
+# print(happiness_copy.columns.tolist())
+# print(happiness_copy.head())
 
 # in this "working hours" dataset the year column has a capital Y so we can rename it so they all have the same column's name
 working_hours_copy = working_hours_copy.rename(columns={"Year": "year"})
@@ -195,3 +208,6 @@ combined_datasets = pd.merge(
     how="inner"
 )
 print(combined_datasets)
+
+
+
